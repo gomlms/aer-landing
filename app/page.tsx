@@ -1,3 +1,6 @@
+"use client";
+
+import { useState, useCallback } from "react";
 import LoadingScreen from "./components/LoadingScreen";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
@@ -9,14 +12,19 @@ import CaseStudies from "./components/CaseStudies";
 import Process from "./components/Process";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
+import BookingForm from "./components/BookingForm";
 
 export default function Home() {
+  const [bookingOpen, setBookingOpen] = useState(false);
+  const openBooking = useCallback(() => setBookingOpen(true), []);
+  const closeBooking = useCallback(() => setBookingOpen(false), []);
+
   return (
     <>
       <LoadingScreen />
-      <Nav />
+      <Nav onBook={openBooking} />
       <main>
-        <Hero />
+        <Hero onBook={openBooking} />
         <SocialProofBar />
         <PainPoints />
         <Solution />
@@ -25,7 +33,8 @@ export default function Home() {
         <Process />
         <FAQ />
       </main>
-      <Footer />
+      <Footer onBook={openBooking} />
+      <BookingForm isOpen={bookingOpen} onClose={closeBooking} />
     </>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useReveal } from "@/app/hooks/useReveal";
 
-export default function Footer() {
+export default function Footer({ onBook }: { onBook: () => void }) {
   const ref = useReveal();
 
   return (
@@ -23,12 +23,13 @@ export default function Footer() {
           </p>
 
           <div className="reveal stagger-3 mt-10">
-            <a
-              href="#book"
+            <button
+              type="button"
+              onClick={onBook}
               className="inline-block rounded-full bg-accent-500 px-10 py-4 text-base font-medium text-aer-950 transition-opacity hover:opacity-90"
             >
               Book a Strategy Call
-            </a>
+            </button>
           </div>
         </div>
       </section>

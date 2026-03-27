@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export default function Nav() {
+export default function Nav({ onBook }: { onBook: () => void }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -28,12 +28,13 @@ export default function Nav() {
           aer
         </a>
 
-        <a
-          href="#book"
+        <button
+          type="button"
+          onClick={onBook}
           className="rounded-full bg-accent-500 px-5 py-2 text-sm font-medium text-aer-950 transition-opacity hover:opacity-90"
         >
           Book a Call
-        </a>
+        </button>
       </div>
     </nav>
   );

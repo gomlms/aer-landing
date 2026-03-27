@@ -148,7 +148,7 @@ function DotGrid() {
 /*  Hero                                                                */
 /* ------------------------------------------------------------------ */
 
-export default function Hero() {
+export default function Hero({ onBook }: { onBook: () => void }) {
   return (
     <section className="relative overflow-hidden bg-aer-950 pt-28 pb-20 lg:pt-40 lg:pb-24">
       {/* Video background -- full section, low opacity for atmosphere */}
@@ -197,12 +197,13 @@ export default function Hero() {
 
         {/* CTAs */}
         <div className="hero-enter hero-enter-4 mt-10 flex flex-wrap items-center gap-4">
-          <a
-            href="#book"
+          <button
+            type="button"
+            onClick={onBook}
             className="rounded-full bg-accent-500 px-8 py-3 font-medium text-aer-950 transition-opacity hover:opacity-90"
           >
             Book a Strategy Call
-          </a>
+          </button>
           <a
             href="#how"
             className="rounded-full border border-aer-600 px-8 py-3 font-medium text-aer-200 transition-colors hover:border-accent-500"
