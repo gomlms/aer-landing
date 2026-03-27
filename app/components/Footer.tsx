@@ -38,6 +38,7 @@ export default function Footer({ onBook }: { onBook: () => void }) {
       <footer className="border-t border-aer-800 bg-aer-950 px-6 py-10 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <div className="flex items-baseline gap-3">
+            <img src="/logo.png" alt="Aer" className="h-6 w-6" />
             <span className="font-display text-lg font-bold text-accent-500">
               aer
             </span>

@@ -20,6 +20,14 @@ export const metadata: Metadata = {
   title: "Aer — AI Automation for Teams That Move Fast",
   description:
     "We build AI systems that automate repeatable processes for ecommerce stores, hedge funds, and small businesses. Give your team time back.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+  },
   openGraph: {
     title: "Aer — AI Automation for Teams That Move Fast",
     description:
