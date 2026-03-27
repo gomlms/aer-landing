@@ -46,36 +46,12 @@ export default function Footer({ onBook }: { onBook: () => void }) {
             </span>
           </div>
 
-          <nav className="flex flex-wrap items-center gap-6">
-            <a
-              href="https://twitter.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-aer-400 transition-colors hover:text-aer-200"
-            >
-              Twitter
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm text-aer-400 transition-colors hover:text-aer-200"
-            >
-              LinkedIn
-            </a>
-            <a
-              href="mailto:hello@aeragency.com"
-              className="text-sm text-aer-400 transition-colors hover:text-aer-200"
-            >
-              hello@aeragency.com
-            </a>
-            <a
-              href="/privacy"
-              className="text-sm text-aer-400 transition-colors hover:text-aer-200"
-            >
-              Privacy
-            </a>
-          </nav>
+          <a
+            href="/privacy"
+            className="text-sm text-aer-400 transition-colors hover:text-aer-200"
+          >
+            Privacy
+          </a>
         </div>
       </footer>
     </>
