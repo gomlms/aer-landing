@@ -2,7 +2,7 @@ import { WebClient } from "@slack/web-api";
 import { NextResponse } from "next/server";
 
 const slack = new WebClient(process.env.SLACK_API_KEY);
-const CHANNEL_ID = process.env.SLACK_CHANNEL_ID ?? "C0APCF8UDGW";
+const CHANNEL_ID = "C0APCF8UDGW";
 
 interface BookingRequest {
   name: string;
