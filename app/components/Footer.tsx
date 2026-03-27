@@ -69,6 +69,12 @@ export default function Footer({ onBook }: { onBook: () => void }) {
             >
               hello@aeragency.com
             </a>
+            <a
+              href="/privacy"
+              className="text-sm text-aer-400 transition-colors hover:text-aer-200"
+            >
+              Privacy
+            </a>
           </nav>
         </div>
       </footer>

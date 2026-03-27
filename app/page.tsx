@@ -13,6 +13,7 @@ import Process from "./components/Process";
 import FAQ from "./components/FAQ";
 import Footer from "./components/Footer";
 import BookingForm from "./components/BookingForm";
+import CookieBanner from "./components/CookieBanner";
 
 export default function Home() {
   const [bookingOpen, setBookingOpen] = useState(false);
@@ -35,6 +36,7 @@ export default function Home() {
       </main>
       <Footer onBook={openBooking} />
       <BookingForm isOpen={bookingOpen} onClose={closeBooking} />
+      <CookieBanner />
     </>
   );
 }
