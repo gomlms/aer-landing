@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { useAffiliate } from "./hooks/useAffiliate";
 import LoadingScreen from "./components/LoadingScreen";
 import Nav from "./components/Nav";
 import Hero from "./components/Hero";
@@ -19,6 +20,7 @@ import BookingForm from "./components/BookingForm";
 import CookieBanner from "./components/CookieBanner";
 
 export default function Home() {
+  const ref = useAffiliate();
   const [bookingOpen, setBookingOpen] = useState(false);
   const openBooking = useCallback(() => setBookingOpen(true), []);
   const closeBooking = useCallback(() => setBookingOpen(false), []);
@@ -41,7 +43,7 @@ export default function Home() {
         <FAQ />
       </main>
       <Footer onBook={openBooking} />
-      <BookingForm isOpen={bookingOpen} onClose={closeBooking} />
+      <BookingForm isOpen={bookingOpen} onClose={closeBooking} affiliateRef={ref} />
       <CookieBanner />
     </>
   );

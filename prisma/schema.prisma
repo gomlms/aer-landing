@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+model AffiliateLink {
+  id        String   @id @default(cuid())
+  code      String   @unique // e.g. "partner1", "john" — used in ?ref=code
+  name      String   // Display name for the affiliate
+  url       String?  // Optional: affiliate's website or profile
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  visits    Visit[]
+  bookings  Booking[]
+
+  @@map("affiliate_links")
+}
+
+model Visit {
+  id              String         @id @default(cuid())
+  affiliateLinkId String?
+  affiliateLink   AffiliateLink? @relation(fields: [affiliateLinkId], references: [id])
+  referrer        String?        // HTTP referrer
+  userAgent       String?
+  ip              String?
+  path            String         @default("/")
+  createdAt       DateTime       @default(now())
+
+  @@index([affiliateLinkId])
+  @@index([createdAt])
+  @@map("visits")
+}
+
+model Booking {
+  id              String         @id @default(cuid())
+  name            String
+  company         String
+  email           String
+  industry        String?
+  teamSize        String?
+  painPoint       String?
+  affiliateLinkId String?
+  affiliateLink   AffiliateLink? @relation(fields: [affiliateLinkId], references: [id])
+  referrer        String?
+  createdAt       DateTime       @default(now())
+
+  @@index([affiliateLinkId])
+  @@index([email])
+  @@map("bookings")
+}

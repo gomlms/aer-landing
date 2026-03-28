@@ -25,9 +25,11 @@ const TEAM_SIZES = [
 export default function BookingForm({
   isOpen,
   onClose,
+  affiliateRef,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  affiliateRef?: string | null;
 }) {
   const [formState, setFormState] = useState<FormState>("idle");
   const [name, setName] = useState("");
@@ -68,6 +70,8 @@ export default function BookingForm({
             industry,
             teamSize,
             painPoint,
+            ref: affiliateRef ?? undefined,
+            referrer: document.referrer || undefined,
           }),
         });
 
@@ -77,7 +81,7 @@ export default function BookingForm({
         setFormState("error");
       }
     },
-    [name, company, email, industry, teamSize, painPoint]
+    [name, company, email, industry, teamSize, painPoint, affiliateRef]
   );
 
   if (!isOpen) return null;
