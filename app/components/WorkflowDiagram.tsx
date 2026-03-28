@@ -5,20 +5,19 @@ import { useEffect, useId, useRef, useState, useCallback, useMemo } from "react"
 interface WorkflowNode {
   id: string;
   label: string;
-  icon?: string;
 }
 
 interface WorkflowConfig {
   nodes: WorkflowNode[];
 }
 
-const NODE_W = 140;
-const NODE_H = 72;
-const H_GAP = 48;
-const V_GAP = 40;
-const PAD_X = 32;
-const PAD_Y = 24;
-const BORDER_R = 12;
+const NODE_W = 130;
+const NODE_H = 44;
+const H_GAP = 36;
+const V_GAP = 32;
+const PAD_X = 20;
+const PAD_Y = 16;
+const R = 6;
 
 function usePrefersReducedMotion(): boolean {
   const [reduced, setReduced] = useState(false);
@@ -69,39 +68,33 @@ export default function WorkflowDiagram({ nodes }: WorkflowConfig) {
     });
   }, [nodes, vertical]);
 
-  const vbWidth = vertical
+  const vbW = vertical
     ? PAD_X * 2 + NODE_W
     : PAD_X * 2 + n * NODE_W + (n - 1) * H_GAP;
-  const vbHeight = vertical
+  const vbH = vertical
     ? PAD_Y * 2 + n * NODE_H + (n - 1) * V_GAP
     : PAD_Y * 2 + NODE_H;
 
-  // Edge connection points + paths
   const edges = useMemo(() => {
     const result: string[] = [];
     for (let i = 0; i < n - 1; i++) {
-      const from = positions[i];
-      const to = positions[i + 1];
+      const a = positions[i];
+      const b = positions[i + 1];
       if (vertical) {
-        const y1 = from.y + NODE_H / 2;
-        const y2 = to.y - NODE_H / 2;
+        const y1 = a.y + NODE_H / 2;
+        const y2 = b.y - NODE_H / 2;
         const my = (y1 + y2) / 2;
-        result.push(
-          `M ${from.x} ${y1} C ${from.x} ${my}, ${to.x} ${my}, ${to.x} ${y2}`
-        );
+        result.push(`M ${a.x} ${y1} C ${a.x} ${my}, ${b.x} ${my}, ${b.x} ${y2}`);
       } else {
-        const x1 = from.x + NODE_W / 2;
-        const x2 = to.x - NODE_W / 2;
+        const x1 = a.x + NODE_W / 2;
+        const x2 = b.x - NODE_W / 2;
         const mx = (x1 + x2) / 2;
-        result.push(
-          `M ${x1} ${from.y} C ${mx} ${from.y}, ${mx} ${to.y}, ${x2} ${to.y}`
-        );
+        result.push(`M ${x1} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${x2} ${b.y}`);
       }
     }
     return result;
   }, [positions, n, vertical]);
 
-  // Observe
   useEffect(() => {
     const el = svgRef.current;
     if (!el) return;
@@ -118,121 +111,91 @@ export default function WorkflowDiagram({ nodes }: WorkflowConfig) {
     return () => obs.disconnect();
   }, []);
 
-  // Animation
   const runSequence = useCallback(() => {
     if (reducedMotion) {
       setActiveIndex(n - 1);
       return;
     }
+    // Slow, deliberate activation -- 1.2s per node
     for (let i = 0; i < n; i++) {
-      setTimeout(() => setActiveIndex(i), i * 500);
+      setTimeout(() => setActiveIndex(i), i * 1200);
     }
   }, [n, reducedMotion]);
 
   useEffect(() => {
     if (inView) {
-      const t = setTimeout(runSequence, 300);
+      const t = setTimeout(runSequence, 600);
       return () => clearTimeout(t);
     }
   }, [inView, runSequence]);
 
   return (
-    <div className="w-full overflow-x-auto py-2">
+    <div className="w-full overflow-x-auto">
       <svg
         ref={svgRef}
-        viewBox={`0 0 ${vbWidth} ${vbHeight}`}
+        viewBox={`0 0 ${vbW} ${vbH}`}
         className="mx-auto block w-full"
         style={{
-          maxWidth: vertical ? 200 : vbWidth,
-          minWidth: vertical ? 160 : Math.min(vbWidth, 600),
+          maxWidth: vertical ? 180 : vbW,
+          minWidth: vertical ? 150 : Math.min(vbW, 560),
         }}
         role="img"
         aria-label="Workflow automation pipeline"
       >
         <defs>
-          {/* Accent glow for active nodes */}
-          <filter
-            id={`glow-${uid}`}
-            x="-30%"
-            y="-30%"
-            width="160%"
-            height="160%"
-          >
-            <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur" />
-            <feFlood
-              floodColor="#d4874d"
-              floodOpacity="0.15"
-              result="color"
-            />
-            <feComposite in="color" in2="blur" operator="in" result="shadow" />
+          <filter id={`g-${uid}`} x="-40%" y="-40%" width="180%" height="180%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="b" />
+            <feFlood floodColor="#d4874d" floodOpacity="0.12" result="c" />
+            <feComposite in="c" in2="b" operator="in" result="s" />
             <feMerge>
-              <feMergeNode in="shadow" />
+              <feMergeNode in="s" />
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-
-          {/* Animated dash pattern for active edges */}
-          <linearGradient
-            id={`edge-grad-${uid}`}
-            x1="0%"
-            y1="0%"
-            x2="100%"
-            y2="0%"
-          >
-            <stop offset="0%" stopColor="#d4874d" stopOpacity="0.1" />
-            <stop offset="50%" stopColor="#d4874d" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#d4874d" stopOpacity="0.1" />
-          </linearGradient>
         </defs>
 
         {/* Edges */}
         {edges.map((path, i) => {
-          const isActive = activeIndex > i;
+          const isLit = activeIndex > i;
           const isCurrent = activeIndex === i;
           return (
-            <g key={i}>
-              {/* Base edge */}
+            <g key={`e${i}`}>
+              {/* Base line */}
               <path
                 d={path}
                 fill="none"
-                stroke="#1f2330"
-                strokeWidth={2}
+                stroke="#1a1e2a"
+                strokeWidth={1}
                 opacity={inView ? 1 : 0}
-                style={{
-                  transition: `opacity 0.4s ease ${i * 80 + 100}ms`,
-                }}
+                style={{ transition: `opacity 0.6s ease ${i * 60}ms` }}
               />
-
-              {/* Active highlight with animated dash */}
-              {(isActive || isCurrent) && (
+              {/* Lit line */}
+              {(isLit || isCurrent) && (
                 <path
                   d={path}
                   fill="none"
-                  stroke={`url(#edge-grad-${uid})`}
-                  strokeWidth={2}
-                  strokeDasharray="6 4"
-                  opacity={isActive ? 0.8 : 0.4}
-                  style={{
-                    transition: "opacity 0.4s ease",
-                  }}
+                  stroke="#d4874d"
+                  strokeWidth={1}
+                  strokeDasharray="4 6"
+                  opacity={isLit ? 0.35 : 0.15}
+                  style={{ transition: "opacity 0.8s ease" }}
                 >
                   {!reducedMotion && (
                     <animate
                       attributeName="stroke-dashoffset"
                       from="20"
                       to="0"
-                      dur="1s"
+                      dur="2s"
                       repeatCount="indefinite"
                     />
                   )}
                 </path>
               )}
-
-              {/* Pulse dot traveling along active edge */}
+              {/* Traveling dot -- slow */}
               {isCurrent && !reducedMotion && (
-                <circle r={3.5} fill="#d4874d" opacity={0.9}>
+                <circle r={2.5} fill="#d4874d" opacity={0.8}>
                   <animateMotion
-                    dur="0.5s"
+                    dur="1s"
                     fill="freeze"
                     repeatCount="1"
                     path={path}
@@ -243,28 +206,28 @@ export default function WorkflowDiagram({ nodes }: WorkflowConfig) {
           );
         })}
 
-        {/* Continuous looping dot after all active */}
+        {/* Looping dot */}
         {activeIndex >= n - 1 && !reducedMotion && edges.length > 0 && (
           <>
             <path
-              id={`loop-${uid}`}
+              id={`lp-${uid}`}
               d={edges.join(" ")}
               fill="none"
               stroke="none"
             />
-            <circle r={3.5} fill="#d4874d" opacity={0.7}>
+            <circle r={2.5} fill="#d4874d" opacity={0.5}>
               <animateMotion
-                dur={`${n * 0.8}s`}
+                dur={`${n * 1.5}s`}
                 repeatCount="indefinite"
                 calcMode="linear"
               >
-                <mpath href={`#loop-${uid}`} />
+                <mpath href={`#lp-${uid}`} />
               </animateMotion>
             </circle>
           </>
         )}
 
-        {/* Nodes */}
+        {/* Nodes -- text only, no emojis, minimal */}
         {nodes.map((node, i) => {
           const pos = positions[i];
           const isActive = activeIndex >= i;
@@ -278,87 +241,58 @@ export default function WorkflowDiagram({ nodes }: WorkflowConfig) {
                 opacity: inView ? 1 : 0,
                 transition: reducedMotion
                   ? "none"
-                  : `opacity 0.5s ease ${i * 80}ms`,
+                  : `opacity 0.6s ease ${i * 60}ms`,
               }}
-              filter={isActive ? `url(#glow-${uid})` : undefined}
+              filter={isActive ? `url(#g-${uid})` : undefined}
             >
-              {/* Node background with inner gradient */}
               <rect
                 x={nx}
                 y={ny}
                 width={NODE_W}
                 height={NODE_H}
-                rx={BORDER_R}
-                fill={isActive ? "#111420" : "#0e1014"}
-                stroke={isActive ? "#d4874d" : "#1f2330"}
-                strokeWidth={isActive ? 1.5 : 1}
+                rx={R}
+                fill={isActive ? "#0f1218" : "#0c0e13"}
+                stroke={isActive ? "rgba(212,135,77,0.5)" : "#181c28"}
+                strokeWidth={0.75}
                 style={{
                   transition: reducedMotion
                     ? "none"
-                    : "stroke 0.3s ease, fill 0.3s ease, stroke-width 0.3s ease",
+                    : "stroke 0.6s ease, fill 0.6s ease",
                 }}
               />
 
-              {/* Subtle top highlight line on active nodes */}
-              {isActive && (
-                <rect
-                  x={nx + BORDER_R}
-                  y={ny}
-                  width={NODE_W - BORDER_R * 2}
-                  height={1}
-                  fill="#d4874d"
-                  opacity={0.3}
-                  rx={0.5}
-                />
-              )}
-
-              {/* Icon */}
-              {node.icon && (
-                <text
-                  x={pos.x}
-                  y={ny + 24}
-                  textAnchor="middle"
-                  dominantBaseline="central"
-                  fontSize={20}
-                  style={{ pointerEvents: "none" }}
-                >
-                  {node.icon}
-                </text>
-              )}
-
-              {/* Label */}
+              {/* Step number -- top left, very subtle */}
               <text
-                x={pos.x}
-                y={ny + (node.icon ? 52 : 38)}
-                textAnchor="middle"
-                dominantBaseline="central"
-                fill={isActive ? "#e2e4ec" : "#6b7290"}
-                fontSize={11.5}
-                fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
-                fontWeight={500}
-                letterSpacing="0.01em"
-                style={{
-                  transition: reducedMotion ? "none" : "fill 0.3s ease",
-                  pointerEvents: "none",
-                }}
-              >
-                {node.label}
-              </text>
-
-              {/* Small step number */}
-              <text
-                x={nx + 10}
-                y={ny + 12}
-                fill={isActive ? "#d4874d" : "#2a2f40"}
-                fontSize={8}
+                x={nx + 8}
+                y={ny + 11}
+                fill={isActive ? "rgba(212,135,77,0.4)" : "#1a1e2a"}
+                fontSize={7}
                 fontFamily="'JetBrains Mono', monospace"
-                fontWeight={400}
                 style={{
-                  transition: reducedMotion ? "none" : "fill 0.3s ease",
+                  transition: reducedMotion ? "none" : "fill 0.6s ease",
                   pointerEvents: "none",
                 }}
               >
                 {String(i + 1).padStart(2, "0")}
+              </text>
+
+              {/* Label -- centered */}
+              <text
+                x={pos.x}
+                y={pos.y + 2}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fill={isActive ? "#c0c5d4" : "#4a5068"}
+                fontSize={10.5}
+                fontFamily="'Plus Jakarta Sans', system-ui, sans-serif"
+                fontWeight={500}
+                letterSpacing="0.02em"
+                style={{
+                  transition: reducedMotion ? "none" : "fill 0.6s ease",
+                  pointerEvents: "none",
+                }}
+              >
+                {node.label}
               </text>
             </g>
           );
