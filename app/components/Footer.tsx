@@ -30,6 +30,10 @@ export default function Footer({ onBook }: { onBook: () => void }) {
             >
               Book a Strategy Call
             </button>
+            <p className="mt-4 text-xs text-aer-500">
+              We take on a limited number of projects each month to maintain
+              quality.
+            </p>
           </div>
         </div>
       </section>

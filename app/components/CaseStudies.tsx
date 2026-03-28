@@ -1,6 +1,39 @@
 "use client";
 
 import { useReveal } from "@/app/hooks/useReveal";
+import WorkflowDiagram from "@/app/components/WorkflowDiagram";
+
+import type { ComponentProps } from "react";
+
+type WorkflowNodes = ComponentProps<typeof WorkflowDiagram>["nodes"];
+
+const ecommerceWorkflow: WorkflowNodes = [
+  { id: "1", label: "Email Inbox", icon: "\u{1F4E7}" },
+  { id: "2", label: "Parse Orders", icon: "\u{1F4CB}" },
+  { id: "3", label: "Update Warehouse", icon: "\u{1F3ED}" },
+  { id: "4", label: "Sync Shopify", icon: "\u{1F6D2}" },
+  { id: "5", label: "Reorder Calc", icon: "\u{1F4CA}" },
+  { id: "6", label: "Place PO", icon: "\u{1F4E6}" },
+];
+
+const financeWorkflow: WorkflowNodes = [
+  { id: "1", label: "CUSIP Watchlist", icon: "\u{1F4C8}" },
+  { id: "2", label: "Scan News", icon: "\u{1F50D}" },
+  { id: "3", label: "Summarize", icon: "\u{1F4DD}" },
+  { id: "4", label: "Link Sources", icon: "\u{1F517}" },
+  { id: "5", label: "Update Excel", icon: "\u{1F4CA}" },
+  { id: "6", label: "Alert Team", icon: "\u{1F514}" },
+];
+
+const supportWorkflow: WorkflowNodes = [
+  { id: "1", label: "Aggregate Tickets", icon: "\u{1F3AB}" },
+  { id: "2", label: "Classify Type", icon: "\u{1F3F7}\uFE0F" },
+  { id: "3", label: "Auto-Answer", icon: "\u{1F4AC}" },
+  { id: "4", label: "Surface New", icon: "\u{1F195}" },
+  { id: "5", label: "Escalate", icon: "\u{1F464}" },
+];
+
+const workflows = [ecommerceWorkflow, financeWorkflow, supportWorkflow];
 
 const caseStudies = [
   {
@@ -75,6 +108,10 @@ export default function CaseStudies() {
                     {metric}
                   </p>
                 ))}
+              </div>
+
+              <div className="mt-8">
+                <WorkflowDiagram nodes={workflows[i]} />
               </div>
             </div>
           ))}

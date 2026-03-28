@@ -33,7 +33,7 @@ export default function Process() {
   const ref = useReveal();
 
   return (
-    <section ref={ref} className="bg-aer-950 px-6 py-20 lg:px-8 lg:py-24">
+    <section id="how" ref={ref} className="bg-aer-950 px-6 py-20 lg:px-8 lg:py-24">
       <div className="mx-auto max-w-6xl">
         <p className="reveal stagger-1 font-mono text-sm text-accent-500">
           0.6
