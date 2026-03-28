@@ -191,8 +191,8 @@ export default function Hero({ onBook }: { onBook: () => void }) {
 
         {/* Subheadline */}
         <p className="hero-enter hero-enter-3 mt-6 max-w-2xl text-lg leading-relaxed text-aer-300">
-          AI systems for ecommerce stores, hedge funds, and small businesses
-          that eliminate repeatable processes and give your team time back.
+          AI systems that eliminate repetitive work, streamline operations, and
+          give your team time back.
         </p>
 
         {/* CTAs */}
@@ -214,15 +214,15 @@ export default function Hero({ onBook }: { onBook: () => void }) {
 
         {/* Metrics bar */}
         <div className="hero-enter hero-enter-5 mt-16 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-xs tracking-wide text-aer-400">
-          <span>3 industries</span>
-          <span className="text-accent-500" aria-hidden="true">
-            ·
-          </span>
           <span>50+ workflows automated</span>
           <span className="text-accent-500" aria-hidden="true">
             ·
           </span>
           <span>&lt;2 week delivery</span>
+          <span className="text-accent-500" aria-hidden="true">
+            ·
+          </span>
+          <span>trusted across industries</span>
         </div>
       </div>
     </section>

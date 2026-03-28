@@ -10,6 +10,7 @@ import Solution from "./components/Solution";
 import Integrations from "./components/Integrations";
 import Benefits from "./components/Benefits";
 import CaseStudies from "./components/CaseStudies";
+import Testimonials from "./components/Testimonials";
 import InlineCTA from "./components/InlineCTA";
 import Process from "./components/Process";
 import FAQ from "./components/FAQ";
@@ -34,6 +35,7 @@ export default function Home() {
         <Integrations />
         <Benefits />
         <CaseStudies />
+        <Testimonials />
         <InlineCTA onBook={openBooking} />
         <Process />
         <FAQ />
